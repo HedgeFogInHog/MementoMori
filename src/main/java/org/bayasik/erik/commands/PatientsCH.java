@@ -5,7 +5,8 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
-import org.bayasik.erik.models.Patients;
+import org.bayasik.erik.models.BranchOffice;
+import org.bayasik.erik.models.Patient;
 
 public class PatientsCH implements CommandHandler {
 
@@ -22,50 +23,60 @@ public class PatientsCH implements CommandHandler {
     public void add(String name, String surname, String phoneNumber, String address, String email) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = new Patients();
-        office.setName(name);
-        office.setSurname(surname);
-        office.setPhoneNumber(phoneNumber);
-        office.setAddress(address);
-        office.setEmail(email);
-        em.persist(office);
+        var patient = new Patient();
+        patient.setName(name);
+        patient.setSurname(surname);
+        patient.setPhoneNumber(phoneNumber);
+        patient.setAddress(address);
+        patient.setEmail(email);
+        System.out.println("AddPatientSucc");
+        em.persist(patient);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.ADD_PATIENT, office);
+        responser.notifyResponse(Commands.ADD_PATIENT, patient);
     }
 
     @Command(Commands.DELETE_PATIENT)
     public void delete(int id) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Patients.class, id);
-        em.remove(office);
+        var patient = em.find(Patient.class, id);
+        em.remove(patient);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.DELETE_PATIENT, office);
+        responser.notifyResponse(Commands.DELETE_PATIENT, patient);
     }
 
     @Command(Commands.UPDATE_PATIENT)
     public void update(int id, String name, String surname, String phoneNumber, String address, String email) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Patients.class, id);
-        office.setName(name);
-        office.setSurname(surname);
-        office.setPhoneNumber(phoneNumber);
-        office.setAddress(address);
-        office.setEmail(email);
-        em.merge(office);
+        var patient = em.find(Patient.class, id);
+        patient.setName(name);
+        patient.setSurname(surname);
+        patient.setPhoneNumber(phoneNumber);
+        patient.setAddress(address);
+        patient.setEmail(email);
+        em.merge(patient);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.UPDATE_PATIENT, office);
+        responser.notifyResponse(Commands.UPDATE_PATIENT, patient);
     }
 
     @Command(Commands.GET_ALL_PATIENT)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM Patients o", Patients.class).getResultList();
+        var patients = em.createQuery("SELECT o FROM Patients o", Patient.class).getResultList();
 
-        responser.jsonResponse(Commands.GET_ALL_PATIENT, offices);
+        responser.notifyResponse(Commands.GET_ALL_PATIENT, patients);
+    }
+
+    @Command(Commands.GET_PATIENT_BY_ID)
+    public void getPatientById(int id) {
+        var em = DependencyLoader.getEntityManager();
+        var patients = em.createQuery("SELECT o FROM Patient o WHERE o.id = :patientId", Patient.class).setParameter("patientId", id).getResultList();
+        System.out.println("GetPatientByIdSucc");
+        System.out.println(patients);
+        responser.notifyResponse(Commands.GET_PATIENT_BY_ID, patients);
     }
 }

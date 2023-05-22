@@ -7,8 +7,12 @@ import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
 import org.bayasik.erik.models.BranchOffice;
 
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
+
 public class BranchOfficesCH implements CommandHandler {
 
+    private EntityManager entityManager;
     private ConnectionContext context;
     private Responser responser;
 
@@ -26,10 +30,11 @@ public class BranchOfficesCH implements CommandHandler {
         office.setName(name);
         office.setAddress(address);
         office.setBudget(budget);
+        System.out.println("AddBranchSucc");
         em.persist(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.ADD_BRANCH_OFFICE, office);
+        responser.notifyResponse(Commands.ADD_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.DELETE_BRANCH_OFFICE)
@@ -40,7 +45,7 @@ public class BranchOfficesCH implements CommandHandler {
         em.remove(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.DELETE_BRANCH_OFFICE, office);
+        responser.notifyResponse(Commands.DELETE_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.UPDATE_BRANCH_OFFICE)
@@ -54,7 +59,7 @@ public class BranchOfficesCH implements CommandHandler {
         em.merge(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.UPDATE_BRANCH_OFFICE, office);
+        responser.notifyResponse(Commands.UPDATE_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.GET_ALL_OFFICES)
@@ -62,6 +67,15 @@ public class BranchOfficesCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, offices);
+        responser.notifyResponse(Commands.GET_ALL_OFFICES, offices);
+    }
+
+    @Command(Commands.GET_OFFICE_BY_ID)
+    public void getOfficeById(int id) {
+        var em = DependencyLoader.getEntityManager();
+        var offices = em.createQuery("SELECT o FROM BranchOffice o WHERE o.id = :branchOfficeId", BranchOffice.class).setParameter("branchOfficeId", id).getResultList();
+        System.out.println("succ");
+        System.out.println(offices);
+        responser.notifyResponse(Commands.GET_OFFICE_BY_ID, offices);
     }
 }

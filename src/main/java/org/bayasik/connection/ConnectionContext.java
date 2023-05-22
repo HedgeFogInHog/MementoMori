@@ -4,9 +4,11 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public interface ConnectionContext  {
+    public static ArrayList<ConnectionContext> contexts = new ArrayList<>();
     void close();
     <T> T get(Class<T> type);
     <T> void put(Class<? extends T> type, T instance);
@@ -23,6 +25,8 @@ public interface ConnectionContext  {
         context.put(InputStream.class, socket.getInputStream());
         context.put(OutputStream.class, socket.getOutputStream());
         context.put(CloseConnectionLocker.class, context);
+
+        contexts.add(context);
 
         return context;
     }

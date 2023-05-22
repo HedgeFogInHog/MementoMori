@@ -20,49 +20,61 @@ public class InventoryCH implements CommandHandler {
     }
 
     @Command(Commands.ADD_INVENTORY)
-    public void add(String name, int amount, BranchOffice BranchOfficeId) {
+    public void add(String name, int amount, int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = new Inventory();
-        office.setName(name);
-        office.setAmount(amount);
-        office.setBranchOfficeId(BranchOfficeId);
-        em.persist(office);
+        var office = em.find(BranchOffice.class, branchOfficeId);
+        var inventory = new Inventory();
+        inventory.setName(name);
+        inventory.setAmount(amount);
+        inventory.setBranchOfficeId(office);
+        System.out.println("AddInventorySucc");
+        em.persist(inventory);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.ADD_INVENTORY, office);
+        responser.notifyResponse(Commands.ADD_INVENTORY, inventory);
     }
 
     @Command(Commands.DELETE_INVENTORY)
     public void delete(int id) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Inventory.class, id);
-        em.remove(office);
+        var inventory = em.find(Inventory.class, id);
+        em.remove(inventory);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.DELETE_INVENTORY, office);
+        responser.notifyResponse(Commands.DELETE_INVENTORY, inventory);
     }
 
     @Command(Commands.UPDATE_INVENTORY)
-    public void update(int id, String name, int amount, BranchOffice BranchOfficeId) {
+    public void update(int id, String name, int amount, int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Inventory.class, id);
-        office.setName(name);
-        office.setAmount(amount);
-        office.setBranchOfficeId(BranchOfficeId);
-        em.merge(office);
+        var office = em.find(BranchOffice.class, branchOfficeId);
+        var inventory = em.find(Inventory.class, id);
+        inventory.setName(name);
+        inventory.setAmount(amount);
+        inventory.setBranchOfficeId(office);
+        em.merge(inventory);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.UPDATE_INVENTORY, office);
+        responser.notifyResponse(Commands.UPDATE_INVENTORY, inventory);
     }
 
     @Command(Commands.GET_ALL_INVENTORY)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM Inventory o", Inventory.class).getResultList();
+        var inventories = em.createQuery("SELECT o FROM Inventory o", Inventory.class).getResultList();
 
-        responser.jsonResponse(Commands.GET_ALL_INVENTORY, offices);
+        responser.notifyResponse(Commands.GET_ALL_INVENTORY, inventories);
+    }
+
+    @Command(Commands.GET_INVENTORY_BY_ID)
+    public void getInventoryById(int id) {
+        var em = DependencyLoader.getEntityManager();
+        var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.id = :inventoryId", Inventory.class).setParameter("inventoryId", id).getResultList();
+        System.out.println("GetInventoryByIdSucc");
+        System.out.println(inventories);
+        responser.notifyResponse(Commands.GET_INVENTORY_BY_ID, inventories);
     }
 }

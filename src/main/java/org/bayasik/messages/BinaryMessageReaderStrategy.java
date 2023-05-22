@@ -7,7 +7,8 @@ public class BinaryMessageReaderStrategy implements MessageReaderStrategy {
     @Override
     public byte[] read(InputStream inputStream) {
         try {
-            if(inputStream.available() <= 4) {
+            var available = inputStream.available();
+            if(available <= 4) {
                 throw new RuntimeException("Message is too small");
             }
 
@@ -16,6 +17,8 @@ public class BinaryMessageReaderStrategy implements MessageReaderStrategy {
 
             var bytes = new byte[lengthInt];
             inputStream.readNBytes(bytes, 0, lengthInt);
+
+            available = inputStream.available();
 
             return bytes;
 

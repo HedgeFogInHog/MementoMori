@@ -5,7 +5,8 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
-import org.bayasik.erik.models.Patients;
+import org.bayasik.erik.models.BranchOffice;
+import org.bayasik.erik.models.Patient;
 import org.bayasik.erik.models.Personal;
 import org.bayasik.erik.models.Schedule;
 
@@ -23,51 +24,65 @@ public class ScheduleCH implements CommandHandler {
     }
 
     @Command(Commands.ADD_SCHEDULE)
-    public void add(Patients patientId, Personal personalId, Date date, double price) {
+    public void add(int patientId, int personId, Date date, double price) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = new Schedule();
-        office.setPatientId(patientId);
-        office.setPersonalId(personalId);
-        office.setDate(date);
-        office.setPrice(price);
-        em.persist(office);
+        var patient = em.find(Patient.class, patientId);
+        var person = em.find(Personal.class, personId);
+        var schedule = new Schedule();
+        schedule.setPatientId(patient);
+        schedule.setPersonalId(person);
+        schedule.setDate(date);
+        schedule.setPrice(price);
+        System.out.println("AddScheduleSucc");
+        em.persist(schedule);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.ADD_SCHEDULE, office);
+        responser.notifyResponse(Commands.ADD_SCHEDULE, schedule);
     }
 
     @Command(Commands.DELETE_SCHEDULE)
     public void delete(int id) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Schedule.class, id);
-        em.remove(office);
+        var schedule = em.find(Schedule.class, id);
+        em.remove(schedule);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.DELETE_SCHEDULE, office);
+        responser.notifyResponse(Commands.DELETE_SCHEDULE, schedule);
     }
 
     @Command(Commands.UPDATE_SCHEDULE)
-    public void update(int id, Patients patientId, Personal personalId, Date date, double price) {
+    public void update(int id, int patientId, int personId, Date date, double price) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(Schedule.class, id);
-        office.setPatientId(patientId);
-        office.setPersonalId(personalId);
-        office.setDate(date);
-        office.setPrice(price);
-        em.merge(office);
+        var patient = em.find(Patient.class, patientId);
+        var person = em.find(Personal.class, personId);
+        var schedule = em.find(Schedule.class, id);
+        schedule.setPatientId(patient);
+        schedule.setPersonalId(person);
+        schedule.setDate(date);
+        schedule.setPrice(price);
+        em.merge(schedule);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.UPDATE_SCHEDULE, office);
+        responser.notifyResponse(Commands.UPDATE_SCHEDULE, schedule);
     }
 
     @Command(Commands.GET_ALL_SCHEDULE)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM Schedule o", Schedule.class).getResultList();
+        var schedules = em.createQuery("SELECT o FROM Schedule o", Schedule.class).getResultList();
 
-        responser.jsonResponse(Commands.GET_ALL_SCHEDULE, offices);
+        responser.notifyResponse(Commands.GET_ALL_SCHEDULE, schedules);
+    }
+
+    @Command(Commands.GET_SCHEDULE_BY_ID)
+    public void getScheduleById(int id) {
+        var em = DependencyLoader.getEntityManager();
+        var schedules = em.createQuery("SELECT o FROM Schedule o WHERE o.id = :scheduleId", Schedule.class).setParameter("scheduleId", id).getResultList();
+        System.out.println("GetScheduleByIdSucc");
+        System.out.println(schedules);
+        responser.notifyResponse(Commands.GET_SCHEDULE_BY_ID, schedules);
     }
 }

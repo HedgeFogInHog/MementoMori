@@ -58,6 +58,8 @@ public class GameServer {
             while (socket.isConnected() && !socket.isClosed()){
             }
 
+            ConnectionContext.contexts.remove(connectionContext);
+
             gameServer.sessionMiddlewaresHandler.handleCloseConnection(connectionContext);
         }
     }

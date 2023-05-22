@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@Table(name = "BudgetHistory")
 public class BudgetHistory {
 
     @Id

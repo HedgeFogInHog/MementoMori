@@ -6,10 +6,11 @@ import javax.persistence.*;
 
 @Entity
 @Data
+@Table(name = "BranchOffice")
 public class BranchOffice {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private int id;
+    private int branchOfficeId;
 
     @Column(name = "OfficeName")
     private String name;

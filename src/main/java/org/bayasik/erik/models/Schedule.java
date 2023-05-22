@@ -7,6 +7,7 @@ import java.util.Date;
 
 @Entity
 @Data
+@Table(name = "Schedule")
 public class Schedule {
 
     @Id
@@ -15,7 +16,7 @@ public class Schedule {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PatientId")
-    private Patients patientId;
+    private Patient patientId;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PersonalId")

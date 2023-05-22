@@ -88,7 +88,16 @@ public class CommandsExplorer {
                 args[i] = Float.intBitsToFloat((int) ((data[lastParamIndex++] << 24) | (data[lastParamIndex++] << 16) | (data[lastParamIndex++] << 8) | data[lastParamIndex++]));
             }
             if(type == double.class){
-                args[i] = Double.longBitsToDouble((long) ((data[lastParamIndex++] << 56) | (data[lastParamIndex++] << 48) | (data[lastParamIndex++] << 40) | (data[lastParamIndex++] << 32) | (data[lastParamIndex++] << 24) | (data[lastParamIndex++] << 16) | (data[lastParamIndex++] << 8) | data[lastParamIndex++]));
+                var longValue = ((long) data[lastParamIndex++] << 56) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 48) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 40) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 32) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 24) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 16) |
+                        ((long) (data[lastParamIndex++] & 0xFF) << 8) |
+                        ((long) (data[lastParamIndex++] & 0xFF));
+                var doubleValue = Double.longBitsToDouble(longValue);
+                args[i] = doubleValue;
             }
             if(type == boolean.class){
                 args[i] = data[lastParamIndex++] == 1;
@@ -118,7 +127,7 @@ public class CommandsExplorer {
         var length = (int) ((data[index++] << 24) | (data[index++] << 16) | (data[index++] << 8) | data[index++]);
         var stringBytes = new byte[length];
         System.arraycopy(data, index, stringBytes, 0, length);
-        return new DataVm<>(new String(stringBytes), index);
+        return new DataVm<>(new String(stringBytes), index+length);
     }
 
     private class DataVm<T>{

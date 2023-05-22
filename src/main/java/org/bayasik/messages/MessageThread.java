@@ -29,18 +29,18 @@ public class MessageThread extends Thread {
         var middlewareOfGettingMessage = new InjectableChainOfResponsibility(
             chainOfGettingMessage.toArray(new ChainOfResponsibilityDescriptor[0])
         );
-        var connectionLiverChecker = connectionContext.get(ConnectionLiverChecker.class);
+//        var connectionLiverChecker = connectionContext.get(ConnectionLiverChecker.class);
 
         try {
-            var inputStream = socket.getInputStream();
-
             while (!socket.isClosed()) {
+
+                var inputStream = socket.getInputStream();
 
                 if(inputStream.available() == 0) {
                     continue;
                 }
 
-                connectionLiverChecker.updateLastTime();
+//                connectionLiverChecker.updateLastTime();
 
                 var injector = connectionContext.get(Injector.class).createChildInjector(binder -> {
                     binder.bindScope(PerMessage.class, new SingletonScope());
@@ -53,9 +53,11 @@ public class MessageThread extends Thread {
 
                 middlewareOfGettingMessage.accept(connectionContext);
 
-                connectionLiverChecker.updateLastTime();
+//                connectionLiverChecker.updateLastTime();
 
             }
+
+            System.out.println("socket closed");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
