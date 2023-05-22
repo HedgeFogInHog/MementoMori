@@ -5,6 +5,7 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
+import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Inventory;
 
 public class InventoryCH implements CommandHandler {
@@ -19,59 +20,49 @@ public class InventoryCH implements CommandHandler {
     }
 
     @Command(Commands.ADD_INVENTORY)
-    public void add(String name, String address, double budget) {
+    public void add(String name, int amount, BranchOffice BranchOfficeId) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
         var office = new Inventory();
         office.setName(name);
-        office.setAddress(address);
-        office.setBudget(budget);
+        office.setAmount(amount);
+        office.setBranchOfficeId(BranchOfficeId);
         em.persist(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
-    }
-
-    @Command(Commands.PRINT_ALL_INVENTORIES)
-    public void print() {
-        var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
-        for(var office : offices)
-        {
-            System.out.println(office.getName());
-        }
+        responser.jsonResponse(Commands.ADD_INVENTORY, office);
     }
 
     @Command(Commands.DELETE_INVENTORY)
     public void delete(int id) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(BranchOffice.class, id);
+        var office = em.find(Inventory.class, id);
         em.remove(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.DELETE_INVENTORY, office);
     }
 
     @Command(Commands.UPDATE_INVENTORY)
-    public void update(int id, String name, String address, double budget) {
+    public void update(int id, String name, int amount, BranchOffice BranchOfficeId) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(BranchOffice.class, id);
+        var office = em.find(Inventory.class, id);
         office.setName(name);
-        office.setName(address);
-        office.setBudget(budget);
+        office.setAmount(amount);
+        office.setBranchOfficeId(BranchOfficeId);
         em.merge(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.UPDATE_INVENTORY, office);
     }
 
-    @Command(Commands.GET_ALL_INVENTORIES)
+    @Command(Commands.GET_ALL_INVENTORY)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
+        var offices = em.createQuery("SELECT o FROM Inventory o", Inventory.class).getResultList();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, offices);
+        responser.jsonResponse(Commands.GET_ALL_INVENTORY, offices);
     }
 }

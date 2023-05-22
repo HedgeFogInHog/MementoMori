@@ -29,17 +29,7 @@ public class BranchOfficesCH implements CommandHandler {
         em.persist(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
-    }
-
-    @Command(Commands.PRINT_ALL_OFFICES)
-    public void print() {
-        var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
-        for(var office : offices)
-        {
-            System.out.println(office.getName());
-        }
+        responser.jsonResponse(Commands.ADD_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.DELETE_BRANCH_OFFICE)
@@ -50,7 +40,7 @@ public class BranchOfficesCH implements CommandHandler {
         em.remove(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.DELETE_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.UPDATE_BRANCH_OFFICE)
@@ -64,7 +54,7 @@ public class BranchOfficesCH implements CommandHandler {
         em.merge(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.UPDATE_BRANCH_OFFICE, office);
     }
 
     @Command(Commands.GET_ALL_OFFICES)

@@ -5,6 +5,7 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
+import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.BudgetHistory;
 
 public class BudgetHistoryCH implements CommandHandler {
@@ -29,28 +30,18 @@ public class BudgetHistoryCH implements CommandHandler {
         em.persist(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
-    }
-
-    @Command(Commands.PRINT_ALL_BUDGET_HISTORY)
-    public void print() {
-        var em = DependencyLoader.getEntityManager();
-        var offices = em.createQuery("SELECT o FROM BudgetHistory o", BudgetHistory.class).getResultList();
-        for(var office : offices)
-        {
-            System.out.println(office., office.getName());
-        }
+        responser.jsonResponse(Commands.ADD_BUDGET_HISTORY, office);
     }
 
     @Command(Commands.DELETE_BUDGET_HISTORY)
     public void delete(int id) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(BranchOffice.class, id);
+        var office = em.find(BudgetHistory.class, id);
         em.remove(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.DELETE_BUDGET_HISTORY, office);
     }
 
     @Command(Commands.UPDATE_BUDGET_HISTORY)
@@ -64,7 +55,7 @@ public class BudgetHistoryCH implements CommandHandler {
         em.merge(office);
         em.getTransaction().commit();
 
-        responser.jsonResponse(Commands.GET_ALL_OFFICES, office);
+        responser.jsonResponse(Commands.UPDATE_BUDGET_HISTORY, office);
     }
 
     @Command(Commands.GET_ALL_BUDGET_HISTORY)

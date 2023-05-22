@@ -19,7 +19,7 @@ public class Schedule {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PersonalId")
-    private Personal postId;
+    private Personal PersonalId;
 
     @Column(name = "Date")
     private Date date;
