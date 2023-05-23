@@ -22,6 +22,10 @@ public class Schedule {
     @JoinColumn(name = "PersonalId")
     private Personal personalId;
 
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "BudgetHistoryId")
+    private BudgetHistory budgetHistoryId;
+
     @Column(name = "Date")
     private Date date;
 

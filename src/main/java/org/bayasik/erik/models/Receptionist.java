@@ -15,4 +15,7 @@ public class Receptionist {
 
     @Column(name = "Password")
     private String password;
+
+    @Column(name = "BudgetHistoryId")
+    private BudgetHistory budgetHistory;
 }

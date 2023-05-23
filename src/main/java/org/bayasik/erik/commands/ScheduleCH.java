@@ -5,15 +5,18 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
+import org.bayasik.erik.models.BudgetHistory;
 import org.bayasik.erik.models.Patient;
 import org.bayasik.erik.models.Personal;
 import org.bayasik.erik.models.Schedule;
 import org.bayasik.erik.viewmodels.ScheduleVM;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class ScheduleCH implements CommandHandler {
-
+    SimpleDateFormat formatter =new SimpleDateFormat("dd/MM/yyyy");
     private ConnectionContext context;
     private Responser responser;
 
@@ -24,15 +27,17 @@ public class ScheduleCH implements CommandHandler {
     }
 
     @Command(Commands.ADD_SCHEDULE)
-    public void add(int patientId, int personId, Date date, double price) {
+    public void add(int patientId, int budgetHistoryId, int personId, String date, double price) throws ParseException {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
+        var office = em.find(BudgetHistory.class, budgetHistoryId);
         var patient = em.find(Patient.class, patientId);
         var person = em.find(Personal.class, personId);
         var schedule = new Schedule();
         schedule.setPatientId(patient);
+        schedule.setBudgetHistoryId(office);
         schedule.setPersonalId(person);
-        schedule.setDate(date);
+        schedule.setDate(formatter.parse(date));
         schedule.setPrice(price);
         System.out.println("AddScheduleSucc");
         em.persist(schedule);
@@ -53,15 +58,17 @@ public class ScheduleCH implements CommandHandler {
     }
 
     @Command(Commands.UPDATE_SCHEDULE)
-    public void update(int id, int patientId, int personId, Date date, double price) {
+    public void update(int id, int budgetHistoryId, int patientId, int personId, String date, double price) throws ParseException {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
+        var office = em.find(BudgetHistory.class, budgetHistoryId);
         var patient = em.find(Patient.class, patientId);
         var person = em.find(Personal.class, personId);
         var schedule = em.find(Schedule.class, id);
         schedule.setPatientId(patient);
+        schedule.setBudgetHistoryId(office);
         schedule.setPersonalId(person);
-        schedule.setDate(date);
+        schedule.setDate(formatter.parse(date));
         schedule.setPrice(price);
         em.merge(schedule);
         em.getTransaction().commit();

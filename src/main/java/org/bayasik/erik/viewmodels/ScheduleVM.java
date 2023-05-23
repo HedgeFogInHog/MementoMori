@@ -14,6 +14,7 @@ import java.util.Collection;
 public class ScheduleVM {
     private int id;
     private int patientId;
+    private int budgetHistory;
     private int personalId;
     private String date;
     private double price;
@@ -21,6 +22,7 @@ public class ScheduleVM {
     public ScheduleVM(Schedule schedule) {
         this(schedule.getId(),
                 schedule.getPatientId().getId(),
+                schedule.getBudgetHistoryId().getId(),
                 schedule.getPersonalId().getId(),
                 schedule.getDate().toString(),
                 schedule.getPrice());
