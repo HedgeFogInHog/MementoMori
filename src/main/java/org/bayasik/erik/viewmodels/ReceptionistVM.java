@@ -20,7 +20,7 @@ public class ReceptionistVM {
     public ReceptionistVM(Receptionist receptionist) {
         this(receptionist.getLogin(),
                 receptionist.getPassword(),
-                receptionist.getBudgetHistory().getId());
+                receptionist.getBranchOfficeId().getBranchOfficeId());
     }
 
     public static ArrayList<ReceptionistVM> fromCollection(Collection<Receptionist> receptionists){

@@ -42,6 +42,7 @@ public class BranchOfficesCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
         var office = em.find(BranchOffice.class, id);
+        System.out.println("DeleteBranchSucc");
         em.remove(office);
         em.getTransaction().commit();
 
@@ -56,6 +57,7 @@ public class BranchOfficesCH implements CommandHandler {
         office.setName(name);
         office.setName(address);
         office.setBudget(budget);
+        System.out.println("UpdateBranchSucc");
         em.merge(office);
         em.getTransaction().commit();
 
@@ -66,7 +68,8 @@ public class BranchOfficesCH implements CommandHandler {
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
         var offices = em.createQuery("SELECT o FROM BranchOffice o", BranchOffice.class).getResultList();
-
+        System.out.println("GetAllOfficesSucc");
+        System.out.println(offices);
         responser.notifyResponse(Commands.GET_ALL_OFFICES, offices);
     }
 

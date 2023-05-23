@@ -16,6 +16,7 @@ public class Receptionist {
     @Column(name = "Password")
     private String password;
 
-    @Column(name = "BudgetHistoryId")
-    private BudgetHistory budgetHistory;
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "BranchOfficeId")
+    private BranchOffice branchOfficeId;
 }

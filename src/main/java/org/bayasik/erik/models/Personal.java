@@ -28,7 +28,7 @@ public class Personal {
     @Column(name = "PersonalEmail")
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
+    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "BranchOfficeId")
     private BranchOffice branchOfficeId;
 

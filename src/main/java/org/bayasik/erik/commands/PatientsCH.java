@@ -66,8 +66,8 @@ public class PatientsCH implements CommandHandler {
     @Command(Commands.GET_ALL_PATIENT)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
-        var patients = em.createQuery("SELECT o FROM Patients o", Patient.class).getResultList();
-
+        var patients = em.createQuery("SELECT o FROM Patient o", Patient.class).getResultList();
+        System.out.println(patients);
         responser.jsonResponse(Commands.GET_ALL_PATIENT, patients);
     }
 

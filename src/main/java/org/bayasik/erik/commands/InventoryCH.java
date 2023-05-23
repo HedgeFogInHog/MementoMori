@@ -76,15 +76,19 @@ public class InventoryCH implements CommandHandler {
         var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.id = :inventoryId", Inventory.class).setParameter("inventoryId", id).getResultList();
         System.out.println("GetInventoryByIdSucc");
         System.out.println(inventories);
-        responser.jsonResponse(Commands.GET_INVENTORY_BY_ID, inventories);
+        responser.jsonResponse(Commands.GET_INVENTORY_BY_ID, new InventoryVM(inventories.get(0)));
     }
 
     @Command(Commands.GET_INVENTORY_BY_BRANCH_OFFICE)
     public void getInventoryByBranchOffice(int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
-        var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.branchOfficeId = :branchOfficeId", Inventory.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+
+        var branchOffice = new BranchOffice();
+        branchOffice.setBranchOfficeId(branchOfficeId);
+
+        var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.branchOfficeId = :branchOfficeId", Inventory.class).setParameter("branchOfficeId", branchOffice).getResultList();
         System.out.println("GetInventoryByIdSucc");
         System.out.println(inventories);
-        responser.jsonResponse(Commands.GET_INVENTORY_BY_BRANCH_OFFICE, inventories);
+        responser.jsonResponse(Commands.GET_INVENTORY_BY_BRANCH_OFFICE, InventoryVM.fromCollection(inventories));
     }
 }

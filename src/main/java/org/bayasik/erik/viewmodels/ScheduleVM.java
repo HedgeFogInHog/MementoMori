@@ -18,14 +18,16 @@ public class ScheduleVM {
     private int personalId;
     private String date;
     private double price;
+    private int branchOfficeId;
 
     public ScheduleVM(Schedule schedule) {
         this(schedule.getId(),
                 schedule.getPatientId().getId(),
-                schedule.getBudgetHistoryId().getId(),
+                schedule.getBranchOfficeId().getBranchOfficeId(),
                 schedule.getPersonalId().getId(),
                 schedule.getDate().toString(),
-                schedule.getPrice());
+                schedule.getPrice(),
+                schedule.getPersonalId().getBranchOfficeId().getBranchOfficeId());
     }
 
     public static ArrayList<ScheduleVM> fromCollection(Collection<Schedule> schedules){

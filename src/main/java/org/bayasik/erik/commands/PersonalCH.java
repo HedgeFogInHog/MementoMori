@@ -9,6 +9,8 @@ import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Personal;
 import org.bayasik.erik.viewmodels.PersonalVM;
 
+import java.util.Collection;
+
 public class PersonalCH implements CommandHandler {
 
     private ConnectionContext context;
@@ -80,15 +82,15 @@ public class PersonalCH implements CommandHandler {
         em.merge(personal);
         em.getTransaction().commit();
 
-        responser.notifyResponse(Commands.UPDATE_PERSONAL, personal);
+        responser.notifyResponse(Commands.UPDATE_PERSONAL, new PersonalVM(personal));
     }
 
     @Command(Commands.GET_ALL_PERSONAL)
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
         var personals = em.createQuery("SELECT o FROM Personal o", Personal.class).getResultList();
-
-        responser.notifyResponse(Commands.GET_ALL_PERSONAL, personals);
+        System.out.println(personals);
+        responser.jsonResponse(Commands.GET_ALL_PERSONAL, PersonalVM.fromCollection(personals));
     }
 
     @Command(Commands.GET_PERSONAL_BY_ID)
@@ -103,9 +105,13 @@ public class PersonalCH implements CommandHandler {
     @Command(Commands.GET_PERSONAL_BY_BRANCH_OFFICE)
     public void getPersonalByBranchOffice(int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
-        var personal = em.createQuery("SELECT o FROM Personal o WHERE o.branchOfficeId = :branchOfficeId", Personal.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+
+        var branchOffice = new BranchOffice();
+        branchOffice.setBranchOfficeId(branchOfficeId);
+
+        var personal = em.createQuery("SELECT o FROM Personal o WHERE o.branchOfficeId = :branchOfficeId", Personal.class).setParameter("branchOfficeId", branchOffice).getResultList();
         System.out.println("GetPersonalBySucc");
         System.out.println(personal);
-        responser.jsonResponse(Commands.GET_PERSONAL_BY_BRANCH_OFFICE, personal);
+        responser.jsonResponse(Commands.GET_PERSONAL_BY_BRANCH_OFFICE, PersonalVM.fromCollection(personal));
     }
 }

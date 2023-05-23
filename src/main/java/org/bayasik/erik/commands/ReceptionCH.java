@@ -5,8 +5,7 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
-import org.bayasik.erik.models.BudgetHistory;
-import org.bayasik.erik.models.Patient;
+import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Receptionist;
 
 public class ReceptionCH implements CommandHandler {
@@ -21,14 +20,14 @@ public class ReceptionCH implements CommandHandler {
     }
 
     @Command(Commands.ADD_RECEPTIONIST)
-    public void AddReceptionist(String login, String password, int budgetHistoryId) {
+    public void AddReceptionist(String login, String password, int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
         em.getTransaction().begin();
-        var office = em.find(BudgetHistory.class, budgetHistoryId);
+        var office = em.find(BranchOffice.class, branchOfficeId);
         var receptionist = new Receptionist();
         receptionist.setLogin(login);
         receptionist.setPassword(password);
-        receptionist.setBudgetHistory(office);
+        receptionist.setBranchOfficeId(office);
         System.out.println("AddReceptionistSucc");
         em.persist(receptionist);
         em.getTransaction().commit();

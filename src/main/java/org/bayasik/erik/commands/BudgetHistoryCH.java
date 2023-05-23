@@ -7,7 +7,6 @@ import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
 import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.BudgetHistory;
-import org.bayasik.erik.models.Inventory;
 import org.bayasik.erik.viewmodels.BudgetHistoryVM;
 
 public class BudgetHistoryCH implements CommandHandler {
@@ -67,7 +66,8 @@ public class BudgetHistoryCH implements CommandHandler {
     public void getAll() {
         var em = DependencyLoader.getEntityManager();
         var budgetHistories = em.createQuery("SELECT o FROM BudgetHistory o", BudgetHistory.class).getResultList();
-
+        System.out.println("GetAllHistorySucc");
+        System.out.println(budgetHistories);
         responser.jsonResponse(Commands.GET_ALL_BUDGET_HISTORY, BudgetHistoryVM.fromCollection(budgetHistories));
     }
 
@@ -81,11 +81,15 @@ public class BudgetHistoryCH implements CommandHandler {
     }
 
     @Command(Commands.GET_BUDGET_HISTORY_BY_BRANCH_OFFICE)
-    public void getInventoryByBranchOffice(int branchOfficeId) {
+    public void getBudgetHistoryByBranchOffice(int branchOfficeId) {
         var em = DependencyLoader.getEntityManager();
-        var budgetHistories = em.createQuery("SELECT o FROM Inventory o WHERE o.branchOfficeId = :branchOfficeId", BudgetHistory.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+
+        var branchOffice = new BranchOffice();
+        branchOffice.setBranchOfficeId(branchOfficeId);
+
+        var budgetHistories = em.createQuery("SELECT o FROM BudgetHistory o WHERE o.branchOfficeId = :branchOfficeId", BudgetHistory.class).setParameter("branchOfficeId", branchOffice).getResultList();
         System.out.println("GetInventoryByIdSucc");
         System.out.println(budgetHistories);
-        responser.jsonResponse(Commands.GET_INVENTORY_BY_BRANCH_OFFICE, budgetHistories);
+        responser.jsonResponse(Commands.GET_BUDGET_HISTORY_BY_BRANCH_OFFICE, BudgetHistoryVM.fromCollection(budgetHistories));
     }
 }

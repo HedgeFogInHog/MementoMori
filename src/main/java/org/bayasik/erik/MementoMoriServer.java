@@ -18,13 +18,13 @@ public class MementoMoriServer {
         builder.useOpen(MessageMiddlewareHandler.class);
         builder.useOpen(CommandsHandlersMiddleware.class);
 
+        builder.addCommandHandler(AuthenticationCH.class);
         builder.addCommandHandler(BranchOfficesCH.class);
         builder.addCommandHandler(BudgetHistoryCH.class);
         builder.addCommandHandler(InventoryCH.class);
         builder.addCommandHandler(PatientsCH.class);
         builder.addCommandHandler(PersonalCH.class);
         builder.addCommandHandler(ScheduleCH.class);
-        builder.addCommandHandler(AuthenticationCH.class);
         builder.addCommandHandler(ReceptionCH.class);
 
         var app = builder.build();
