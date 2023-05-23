@@ -20,7 +20,7 @@ public class Schedule {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "PersonalId")
-    private Personal PersonalId;
+    private Personal personalId;
 
     @Column(name = "Date")
     private Date date;

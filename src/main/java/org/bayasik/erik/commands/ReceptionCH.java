@@ -38,6 +38,6 @@ public class ReceptionCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         var receptionists = em.createQuery("SELECT o FROM Receptionist o", Receptionist.class).getResultList();
         System.out.println("GetAllReceptionistsSucc");
-        responser.notifyResponse(Commands.GET_ALL_RECEPTIONISTS, receptionists);
+        responser.jsonResponse(Commands.GET_ALL_RECEPTIONISTS, receptionists);
     }
 }

@@ -5,10 +5,10 @@ import org.bayasik.commands.Command;
 import org.bayasik.commands.CommandHandler;
 import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
-import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Patient;
 import org.bayasik.erik.models.Personal;
 import org.bayasik.erik.models.Schedule;
+import org.bayasik.erik.viewmodels.ScheduleVM;
 
 import java.util.Date;
 
@@ -74,7 +74,7 @@ public class ScheduleCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         var schedules = em.createQuery("SELECT o FROM Schedule o", Schedule.class).getResultList();
 
-        responser.notifyResponse(Commands.GET_ALL_SCHEDULE, schedules);
+        responser.notifyResponse(Commands.GET_ALL_SCHEDULE, ScheduleVM.fromCollection(schedules));
     }
 
     @Command(Commands.GET_SCHEDULE_BY_ID)
@@ -83,6 +83,15 @@ public class ScheduleCH implements CommandHandler {
         var schedules = em.createQuery("SELECT o FROM Schedule o WHERE o.id = :scheduleId", Schedule.class).setParameter("scheduleId", id).getResultList();
         System.out.println("GetScheduleByIdSucc");
         System.out.println(schedules);
-        responser.notifyResponse(Commands.GET_SCHEDULE_BY_ID, schedules);
+        responser.jsonResponse(Commands.GET_SCHEDULE_BY_ID, schedules);
+    }
+
+    @Command(Commands.GET_SCHEDULE_BY_BRANCH_OFFICE)
+    public void getScheduleByBranchOffice(int branchOfficeId) {
+        var em = DependencyLoader.getEntityManager();
+        var schedules = em.createQuery("SELECT o FROM Schedule o WHERE o.branchOfficeId = :branchOfficeId", Schedule.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+        System.out.println("GetScheduleByIdSucc");
+        System.out.println(schedules);
+        responser.jsonResponse(Commands.GET_SCHEDULE_BY_BRANCH_OFFICE, schedules);
     }
 }

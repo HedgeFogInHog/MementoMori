@@ -7,6 +7,7 @@ import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
 import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Personal;
+import org.bayasik.erik.viewmodels.PersonalVM;
 
 public class PersonalCH implements CommandHandler {
 
@@ -96,6 +97,15 @@ public class PersonalCH implements CommandHandler {
         var personal = em.createQuery("SELECT o FROM Personal o WHERE o.id = :personalId", Personal.class).setParameter("personalId", id).getResultList();
         System.out.println("GetPersonalBySucc");
         System.out.println(personal);
-        responser.notifyResponse(Commands.GET_PERSONAL_BY_ID, personal);
+        responser.jsonResponse(Commands.GET_PERSONAL_BY_ID, PersonalVM.fromCollection(personal));
+    }
+
+    @Command(Commands.GET_PERSONAL_BY_BRANCH_OFFICE)
+    public void getPersonalByBranchOffice(int branchOfficeId) {
+        var em = DependencyLoader.getEntityManager();
+        var personal = em.createQuery("SELECT o FROM Personal o WHERE o.branchOfficeId = :branchOfficeId", Personal.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+        System.out.println("GetPersonalBySucc");
+        System.out.println(personal);
+        responser.jsonResponse(Commands.GET_PERSONAL_BY_BRANCH_OFFICE, personal);
     }
 }

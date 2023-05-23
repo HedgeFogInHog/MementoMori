@@ -68,7 +68,7 @@ public class PatientsCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         var patients = em.createQuery("SELECT o FROM Patients o", Patient.class).getResultList();
 
-        responser.notifyResponse(Commands.GET_ALL_PATIENT, patients);
+        responser.jsonResponse(Commands.GET_ALL_PATIENT, patients);
     }
 
     @Command(Commands.GET_PATIENT_BY_ID)
@@ -77,6 +77,6 @@ public class PatientsCH implements CommandHandler {
         var patients = em.createQuery("SELECT o FROM Patient o WHERE o.id = :patientId", Patient.class).setParameter("patientId", id).getResultList();
         System.out.println("GetPatientByIdSucc");
         System.out.println(patients);
-        responser.notifyResponse(Commands.GET_PATIENT_BY_ID, patients);
+        responser.jsonResponse(Commands.GET_PATIENT_BY_ID, patients);
     }
 }

@@ -7,6 +7,7 @@ import org.bayasik.connection.ConnectionContext;
 import org.bayasik.connection.Responser;
 import org.bayasik.erik.models.BranchOffice;
 import org.bayasik.erik.models.Inventory;
+import org.bayasik.erik.viewmodels.InventoryVM;
 
 public class InventoryCH implements CommandHandler {
 
@@ -66,7 +67,7 @@ public class InventoryCH implements CommandHandler {
         var em = DependencyLoader.getEntityManager();
         var inventories = em.createQuery("SELECT o FROM Inventory o", Inventory.class).getResultList();
 
-        responser.notifyResponse(Commands.GET_ALL_INVENTORY, inventories);
+        responser.jsonResponse(Commands.GET_ALL_INVENTORY, InventoryVM.fromCollection(inventories));
     }
 
     @Command(Commands.GET_INVENTORY_BY_ID)
@@ -75,6 +76,15 @@ public class InventoryCH implements CommandHandler {
         var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.id = :inventoryId", Inventory.class).setParameter("inventoryId", id).getResultList();
         System.out.println("GetInventoryByIdSucc");
         System.out.println(inventories);
-        responser.notifyResponse(Commands.GET_INVENTORY_BY_ID, inventories);
+        responser.jsonResponse(Commands.GET_INVENTORY_BY_ID, inventories);
+    }
+
+    @Command(Commands.GET_INVENTORY_BY_BRANCH_OFFICE)
+    public void getInventoryByBranchOffice(int branchOfficeId) {
+        var em = DependencyLoader.getEntityManager();
+        var inventories = em.createQuery("SELECT o FROM Inventory o WHERE o.branchOfficeId = :branchOfficeId", Inventory.class).setParameter("branchOfficeId", branchOfficeId).getResultList();
+        System.out.println("GetInventoryByIdSucc");
+        System.out.println(inventories);
+        responser.jsonResponse(Commands.GET_INVENTORY_BY_BRANCH_OFFICE, inventories);
     }
 }
